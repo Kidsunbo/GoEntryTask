@@ -13,7 +13,7 @@ import (
 
 
 func init(){
-	if ok := newRedisClient("<ip and port of my redis server","");!ok{
+	if ok := newRedisClient("192.168.1.9:6379","");!ok{
 		log.Println("Redis fails to connect")
 	}
 	go func() {
@@ -49,8 +49,8 @@ func GetUserInfo(username string) (ui *UserInfo.UserInfo){
 	return &UserInfo.UserInfo{Username: username, Nickname: res, Profile: pro}
 }
 
-func Exist(username string) bool{
-	count,err :=client.Exists(username).Result()
+func Exist(key string) bool{
+	count,err :=client.Exists(key).Result()
 	if err!=nil || count==0{
 		return false
 	}

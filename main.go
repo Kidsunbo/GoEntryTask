@@ -22,5 +22,4 @@ func main(){
 
 
 	wg.Wait()
-
 }

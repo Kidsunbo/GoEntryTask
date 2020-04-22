@@ -62,6 +62,7 @@ func tryToLogin(username,password string) (bool,string,*UserInfo){
 	return true,"",&ret.UserInfo
 }
 
+
 func postUpdate(username,nickname,profile string) bool {
 	com :=completer{}
 	client,err:=net.Dial("tcp","localhost:12345")

@@ -15,14 +15,14 @@
 <div class="container text-center">
     <div class="nav flex-column justify-content-center bg-light text-center">
 {{if .Success}}
-<form action="/update/" method="POST" id="update">
+<form action="/update/" method="POST" id="update" enctype="multipart/form-data">
     <div><h1>Username:</h1> <input type='text' class="hide" value="{{printf "%s" .Username}}" name="username"> {{.Username}}</div>
     <label><h1>Nickname:</h1>
     <input type="text" value="{{printf "%s" .Nickname}}" name="nickname">
     </label>
     <h1>Profile:</h1>
-    <div><input class="hide" type="file" name="profile" onchange="inputFileBase64();" id="inputFileImg"><a href="javascript:;"><img id="image" src="{{.Profile}}" alt="No Image"> </a></div>
-    <textarea class="hide" name="profile_photo"></textarea>
+    <input type="text" class="hide" name="last_profile" value="{{.ProfileName}}">
+    <div><input class="hide" type="file" name="profile" id="input" onchange="changeImg()" ><a href="javascript:;"><img id="image" src="{{.Profile}}" alt="No Image" onclick="clickInput()"></a></div>
     <div style="padding-top: 10px"><input type="submit" value="Change"></div>
 </form>
 
@@ -33,56 +33,20 @@
 {{end}}
     </div>
 </div>
+
 <script>
-    document.getElementsByTagName('a')[0].onclick = function(){
-        document.getElementById('inputFileImg').click();
+    function clickInput(){
+        let input = document.getElementById("input");
+        input.click();
     }
 
-    function inputFileBase64(){
-        var call = upload_file('inputFileImg',['.png','.jpg']);
-    }
-
-    function upload_file(input_img_id,format){
-        if(document.getElementById(input_img_id).value != ''){
-            var fileExt=document.getElementById(input_img_id).value.substr(document.getElementById(input_img_id).value.lastIndexOf(".")).toLowerCase();
-            var data =  {'code' : false};
-            for(var i = 0; i < format.length; i++){
-                if(fileExt == format[i]){
-                    data = {'code' : true};
-                }
-            }
-            if(!data['code']){
-                document.getElementById(input_img_id).value='';
-                return data;
-            }
-            var file = document.getElementById(input_img_id);
-            var data = createReader(file.files[0]);
+    function changeImg(){
+        let img = new Image()
+        img.onload=function(){
+            document.getElementById("image").src = this.src
         }
+        img.src=(window.URL||window.webkitURL).createObjectURL(input.files[0])
     }
-
-    function createReader(file){
-        var reader = new FileReader;
-        reader.onload = function (evt){
-            var image = new Image();
-            image.onload = function(){
-                data = {
-                    'code'      : true,
-                    'base_64'   : evt.target.result,
-                    'width'     : this.width,
-                    'height'    : this.height,
-                }
-                document.getElementsByTagName('img')[0].src=data.base_64;
-            };
-            image.src = evt.target.result;
-        };
-        reader.onloadend = (()=>{
-            let area = document.getElementsByTagName("textarea")[0];
-            area.value=reader.result;
-        });
-        reader.readAsDataURL(file);
-    }
-
-
 </script>
 </body>
 </html>

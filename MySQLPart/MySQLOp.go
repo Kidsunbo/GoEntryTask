@@ -24,7 +24,7 @@ var db *sql.DB =nil
 var insert *sql.Stmt
 var update *sql.Stmt
 func init(){
-	db=newMysqlClient("<ip of my mysql>","<name>","<username>","<password>")
+	db=newMysqlClient("192.168.1.9","Learn","root","root")
 	tInsert ,err := db.Prepare("INSERT INTO info VALUES(?,?,?)")
 	if err!=nil{
 		log.Println(err.Error())

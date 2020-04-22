@@ -94,6 +94,7 @@ func handleLogin(msg string,con net.Conn){
 			res.Reason="No user info found"
 			buf,_:=json.Marshal(res)
 			sendData(buf,con)
+			_ =MySQLPart.WriteToMysql(username,"","",MySQLPart.INSERT)
 		}else {
 			res.Result = "success"
 			res.UserInfo = *ui
@@ -117,7 +118,7 @@ func handleUpdate(msg string,con net.Conn){
 	}
 	res :=&JsonLoginRes{}
 	res.Type="update"
-	if RedisPart.Exist(update.Username) {
+	if RedisPart.Exist(fmt.Sprintf("info:%s",update.Username)) {
 		err =MySQLPart.WriteToMysql(update.Username, update.Nickname, update.Profile, MySQLPart.UPDATE)
 	}else{
 		err =MySQLPart.WriteToMysql(update.Username,update.Nickname,update.Profile,MySQLPart.INSERT)
